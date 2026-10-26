@@ -16,7 +16,7 @@ function divide(a, b) {
   }
   return a / b;
 }
-function squareout(a) {
+function squareRoot(a) {
   if (a < 0) {
     throw new Error("Cannot take the square root of a negative number");
   }
@@ -33,7 +33,7 @@ function calculate(a, b, operator) {
     case "/":
       return divide(a, b);
     case "sqrt":
-      return squareout(a);
+      return squareRoot(a);
     default:
       throw new Error("Invalid operator");
   }
