@@ -6,6 +6,10 @@ let shouldStartNewNumber = true;
 const buttons = document.querySelectorAll(".buttons button");
 const display = document.querySelector(".display");
 
+let currentInput = "0";
+let expression = "";
+display.value = "0";
+
 function add(a, b) {
   return a + b;
 }
@@ -40,8 +44,6 @@ function calculate(a, b, operator) {
       return multiply(a, b);
     case "/":
       return divide(a, b);
-    case "√":
-      return squareRoot(a);
     default:
       throw new Error("Invalid operator");
   }
@@ -51,40 +53,42 @@ function calculate(a, b, operator) {
 function formatNumber(num) {
   return String(Number(num.toFixed(10)));
 }
+function updateDisplay() {
+  if (operator === null) {
+    expression = currentInput;
+  } else if (shouldStartNewNumber) {
+    expression = `${formatNumber(firstOperand)} ${operator}`;
+  } else {
+    expression = `${formatNumber(firstOperand)} ${operator} ${currentInput}`;
+  }
+  display.value = expression;
+}
 // this is to handle the input of digits
 function enterDigit(digit) {
-  if (
-    shouldStartNewNumber ||
-    display.value === "0" ||
-    display.value === "Error"
-  ) {
-    display.value = digit;
+  if (shouldStartNewNumber || display.value === "Error") {
+    currentInput = digit;
     shouldStartNewNumber = false;
   } else {
-    display.value += digit;
+    currentInput += digit;
   }
+  updateDisplay();
 }
 // this is to handle the input of decimal point
 function enterDecimal() {
-  if (
-    shouldStartNewNumber ||
-    display.value === "0" ||
-    display.value === "Error"
-  ) {
-    display.value = "0.";
+  if (shouldStartNewNumber || display.value === "Error") {
+    currentInput = "0.";
     shouldStartNewNumber = false;
-  } else if (!display.value.includes(".")) {
+  } else if (!currentInput.includes(".")) {
     display.value += ".";
   }
 }
 
 function chooseOperator(nextOperator) {
-  const value = Number(display.value);
-
-  if (!Number.isFinite(value)) return;
+  if (display.value === "Error") return;
 
   if (operator !== null && shouldStartNewNumber) {
     operator = nextOperator;
+    updateDisplay();
     return;
   }
 
@@ -92,31 +96,34 @@ function chooseOperator(nextOperator) {
     calculateResult();
     if (display.value === "Error") return;
   }
-  firstOperand = Number(display.value);
+  firstOperand = Number(currentInput);
   operator = nextOperator;
   secondOperand = null;
   shouldStartNewNumber = true;
+  updateDisplay();
 }
 
 function calculateResult() {
   if (operator === null || firstOperand === null || shouldStartNewNumber) {
     return;
   }
-  secondOperand = Number(display.value);
+  secondOperand = Number(currentInput);
 
   try {
     const result = calculate(firstOperand, secondOperand, operator);
     if (!Number.isFinite(result)) {
       throw new Error("invalid number");
     }
-    display.value = formatNumber(result);
 
-    firstOperand = result;
+    currentInput = formatNumber(result);
+    firstOperand = null;
     operator = null;
     secondOperand = null;
     shouldStartNewNumber = true;
+    updateDisplay();
   } catch (error) {
     display.value = "Error";
+    currentInput = "0";
     firstOperand = null;
     secondOperand = null;
     operator = null;
@@ -128,40 +135,52 @@ function clearAll() {
   firstOperand = null;
   secondOperand = null;
   operator = null;
-  display.value = "0";
+  currentInput = "0";
+  expression = "";
   shouldStartNewNumber = true;
+  updateDisplay();
 }
 
 function backspace() {
   if (shouldStartNewNumber || display.value === "Error") {
     return;
   }
-  display.value = display.value.slice(0, -1);
-  if (display.value === "") {
-    display.value = "0";
+  currentInput = currentInput.slice(0, -1);
+  if (currentInput === "" || currentInput === "-") {
+    currentInput = "0";
     shouldStartNewNumber = true;
   }
-}
-function calculatePercentage() {
-  if (display.value === "Error") return;
-  const value = Number(display.value);
-  display.value = formatNumber(value / 100);
-  shouldStartNewNumber = true;
+  updateDisplay();
 }
 
-function updateDisplay() {
-  display.value = formatNumber(Number(display.value));
+function calculatePercentage() {
+  if (display.value === "Error") return;
+  currentInput = formatNumber(Number(currentInput) / 100);
+  shouldStartNewNumber = false;
+
+  updateDisplay();
 }
+
 function applySquareRoot() {
   if (display.value === "Error") return;
-  const value = Number(display.value);
-  if (value < 0) {
-    display.value = "Error";
+
+  try {
+    currentInput = formatNumber(squareRoot(Number(currentInput)));
+
+    firstOperand = null;
+    secondOperand = null;
+    operator = null;
     shouldStartNewNumber = true;
-    return;
+
+    updateDisplay();
+  } catch (error) {
+    display.value = "Error";
+    currentInput = "0";
+    firstOperand = null;
+    secondOperand = null;
+    operator = null;
+    shouldStartNewNumber = true;
   }
-  display.value = formatNumber(Math.sqrt(value));
-  shouldStartNewNumber = true;
 }
 
 buttons.forEach((button) => {
@@ -190,6 +209,9 @@ buttons.forEach((button) => {
         break;
       case "percent":
         calculatePercentage();
+        break;
+      case "sqrt":
+        applySquareRoot();
         break;
       default:
         break;
