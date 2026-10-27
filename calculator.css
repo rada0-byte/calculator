@@ -46,3 +46,7 @@ button {
   text-align: right;
   padding-right: 10px;
 }
+button:hover {
+  background-color: rgb(255, 177, 33);
+  opacity: 50%;
+}
