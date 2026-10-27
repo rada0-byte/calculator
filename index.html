@@ -9,28 +9,34 @@
   </head>
   <body>
     <div class="calculator">
-      <input type="text" class="display" readonly />
+      <input type="text" class="display" value="0" readonly />
+
+
       <div class="buttons">
-        <button class="seven">7</button>
-        <button class="eight">8</button>
-        <button class="nine">9</button>
-        <button class="divide">/</button>
-        <button class="four">4</button>
-        <button class="five">5</button>
-        <button class="six">6</button>
-        <button class="multiply">*</button>
-        <button class="one">1</button>
-        <button class="two">2</button>
-        <button class="three">3</button>
-        <button class="subtract">-</button>
-        <button class="zero">0</button>
-        <button class="decimal">.</button>
-        <button class="add">+</button>
-        <button class="backspace">&#9003</button>
-        <button class="equals">=</button>
-        <button class="percent">%</button>
-        <button class="square-root">√</button>
-        <button class="clear-all">AC</button>
+        <button data-action = "digit" data-value="7">7</button>
+        <button data-action = "digit" data-value="8">8</button>
+        <button data-action = "digit" data-value="9">9</button>
+        <button data-action = "operator" data-value="/">/</button>
+        <button data-action = "digit" data-value="4">4</button>
+        <button data-action = "digit" data-value="5">5</button>
+        <button data-action = "digit" data-value="6">6</button>
+        <button data-action = "operator" data-value="*">*</button>
+        <button data-action = "digit" data-value="1">1</button>
+        <button data-action = "digit" data-value="2">2</button>
+        <button data-action = "digit" data-value="3">3</button>
+        <button data-action = "operator" data-value="-">-</button>
+        <button data-action = "digit" data-value="0">0</button>
+        <button data-action = "decimal">.</button>
+        <button data-action = "operator" data-value="+">+</button>
+
+
+        
+        <button data-action = "backspace">&#9003</button>
+
+        <button data-action = "equals" >=</button>
+        <button data-action = "percent">%</button>
+        <button data-action = "sqrt">√</button>
+        <button data-action = "clear-all">AC</button>
       </div>
     </div>
   </body>
