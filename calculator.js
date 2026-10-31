@@ -49,7 +49,7 @@ function calculate(a, b, operator) {
   }
 }
 
-// this is  format the number and unnecessary decimal places
+// this is to  format the number and remove  unnecessary decimal places
 function formatNumber(num) {
   return String(Number(num.toFixed(10)));
 }
